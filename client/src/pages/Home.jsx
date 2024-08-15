@@ -1,8 +1,11 @@
 import LanguageDropDown from "../components/DropDown/LanguageDropDown";
-
+import ThemeDropDown from "../components/DropDown/ThemeDropDown";
 const Home = () => {
-  return(
-    <LanguageDropDown/>
+  return (
+    <>
+      <LanguageDropDown />
+      <ThemeDropDown />
+    </>
   );
 };
 
