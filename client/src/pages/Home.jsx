@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OutputDetails from "../components/OutputWindow/OutputDetail";
 import ThemeDropDown from "../components/DropDown/ThemeDropDown";
 import LanguageDropDown from "../components/DropDown/LanguageDropDown";
@@ -6,6 +6,9 @@ import CodeEditor from "../components/Editor/Editor";
 import InputWindow from "../components/InputWindow/InputWindow";
 import OutputWindow from "../components/OutputWindow/OutputWindow";
 import axios from "axios";
+import {io} from 'socket.io-client'
+
+const socket = io.connect('http://localhost:3001')
 
 const Home = () => {
   const [theme, setTheme] = useState("vs-dark");
@@ -15,6 +18,12 @@ const Home = () => {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [processing, setProcessing] = useState(false);
+
+  useEffect(()=>{
+      socket.on('getcode', payload=>{
+        setCode(payload)
+      })
+  },[socket])
 
   const handleChange = (newTheme) => {
     setTheme(newTheme);
@@ -27,7 +36,10 @@ const Home = () => {
   };
 
   const onChange = (codeType, code) => {
-    if (codeType == "code") setCode(code);
+    if (codeType == "code") {
+      socket.emit('code', code)
+      setCode(code);
+    }
   };
 
   const handleCompile = () => {

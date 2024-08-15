@@ -12,6 +12,7 @@ const CodeEditor = ({code, theme, lang, onChange}) => {
     <Editor
     onChange={handleChange}
       language={lang}
+      value={code}
       theme={theme}
       height="85vh"
       defaultLanguage="javascript"
