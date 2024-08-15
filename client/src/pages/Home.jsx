@@ -23,6 +23,14 @@ const Home = () => {
       socket.on('getcode', payload=>{
         setCode(payload)
       })
+
+      socket.on('input', payload=>{
+        setInput(payload)
+      })
+
+      socket.on('output',payload =>{
+        setOutput(payload)
+      })
   },[socket])
 
   const handleChange = (newTheme) => {
