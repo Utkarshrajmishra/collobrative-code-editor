@@ -19,9 +19,17 @@ io.on("connection", (socket) => {
   console.log(`user connected ${socket.id}`);
 
   socket.on("code", (payload) => {
-    console.log(payload)
     socket.broadcast.emit('getcode', payload)
   });
+
+  socket.on("input", payload =>{
+    socket.broadcast.emit('getinput', payload)
+  });
+
+  socket.on('output', payload =>{
+    socket.broadcast.emit('getoutput', payload)
+  });
+
 });
 
 server.listen(3001, () => {
