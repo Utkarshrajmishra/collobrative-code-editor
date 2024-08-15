@@ -1,10 +1,18 @@
 import { Editor } from "@monaco-editor/react";
 
-const CodeEditor = () => {
+const CodeEditor = ({code, theme, lang, onChange}) => {
+
+  const handleChange=(values)=>{
+    if(values){
+      onChange('code',values)
+    }
+  }
+
   return (
     <Editor
-      language="javascript"
-      theme="vs-dark"
+    onChange={handleChange}
+      language={lang}
+      theme={theme}
       height="85vh"
       defaultLanguage="javascript"
     />

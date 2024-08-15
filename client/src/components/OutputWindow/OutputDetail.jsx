@@ -1,4 +1,4 @@
-const OutputDetails = () => {
+const OutputDetails = ({outputInfo}) => {
   return (
     <>
       <div className="metrics-container mt-4 flex flex-col space-y-3">
