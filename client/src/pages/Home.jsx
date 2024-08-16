@@ -9,7 +9,7 @@ import OutputWindow from "../components/OutputWindow/OutputWindow";
 import axios from "axios";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3001");
+const socket = io("https://collobrative-code-editor-server.vercel.app/");
 
 const Home = () => {
   const [theme, setTheme] = useState("vs-dark");
@@ -150,7 +150,7 @@ const Home = () => {
           <ThemeDropDown handleChange={handleChange} />
         </div>
         <div className="py-2 px-4">
-          <button className="border-2 text-[0.8rem] border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-8 py-2 leading-[1.75rem] hover:shadow transition duration-200 bg-white text-neutral-800 flex-shrink-0">
+          <button className="leading-6 border-2 text-[0.86rem] border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2 hover:shadow transition duration-200 bg-white text-neutral-800 flex-shrink-0 flex items-center">
             Copy Room Code
           </button>
         </div>
