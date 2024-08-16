@@ -38,9 +38,9 @@ io.on("connection", (socket) => {
       console.log(`User disconnected: ${socket.id}`);
     });
 
-    socket.on("getLanguage", (payload) => {
+    socket.on("setLanguage", (payload) => {
       console.log(payload);
-      socket.to(payload.id).emit("setLang", payload);
+      socket.to(payload.id).emit("getLang", payload);
     });
   });
 });

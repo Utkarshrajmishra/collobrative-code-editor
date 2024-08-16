@@ -9,7 +9,7 @@ import OutputWindow from "../components/OutputWindow/OutputWindow";
 import axios from "axios";
 import { io } from "socket.io-client";
 
-    const socket = io("http://localhost:3001");
+const socket = io("http://localhost:3001");
 
 const Home = () => {
   const [theme, setTheme] = useState("vs-dark");
@@ -22,13 +22,11 @@ const Home = () => {
 
   let { id } = useParams();
 
-  useEffect(()=>{
-    socket.emit('joinRoom', id);
-  },[])
+  useEffect(() => {
+    socket.emit("joinRoom", id);
+  }, []);
 
   useEffect(() => {
-    
-
     socket.on("getcode", (payload) => {
       setCode(payload);
     });
@@ -41,13 +39,12 @@ const Home = () => {
       setOutput(payload);
     });
 
-    // socket.on("setLang",payload =>{
-    //   setLangID(newLanguage.id);
-    //   setLanguage(newLanguage.value);
-    // });
+    socket.on("getLang", (payload) => {
+      setLangID(payload.newLanguage.id);
+      setLanguage(payload.newLanguage.value);
+    });
 
-    socket.on()
-
+    socket.on();
   }, [socket]);
 
   const handleChange = (newTheme) => {
@@ -67,7 +64,7 @@ const Home = () => {
   const handleChangeLang = (newLanguage) => {
     setLangID(newLanguage.id);
     setLanguage(newLanguage.value);
-    socket.emit('setLanguage', {id, newLanguage})
+    socket.emit("setLanguage", { id, newLanguage });
   };
 
   const onChange = (codeType, code) => {
@@ -169,7 +166,10 @@ const Home = () => {
         </div>
         <div className="flex-col w-[40%] pr-4">
           <div className="right-container flex flex-shrink-0 flex-col">
-            <OutputWindow currentOutput={output} handleOutput={handleOutputChange}/>
+            <OutputWindow
+              currentOutput={output}
+              handleOutput={handleOutputChange}
+            />
           </div>
           <div className="flex flex-col items-end">
             <InputWindow input={input} setInput={handleInputChange} />
