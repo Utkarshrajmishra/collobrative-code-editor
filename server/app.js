@@ -18,6 +18,10 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log(`user connected ${socket.id}`);
 
+  socket.on('getRoomID', payload => {
+    console.log(payload)
+  })
+
   socket.on("code", (payload) => {
     socket.broadcast.emit('getcode', payload)
   });

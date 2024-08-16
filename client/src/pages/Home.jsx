@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import OutputDetails from "../components/OutputWindow/OutputDetail";
 import ThemeDropDown from "../components/DropDown/ThemeDropDown";
 import LanguageDropDown from "../components/DropDown/LanguageDropDown";
@@ -6,9 +7,9 @@ import CodeEditor from "../components/Editor/Editor";
 import InputWindow from "../components/InputWindow/InputWindow";
 import OutputWindow from "../components/OutputWindow/OutputWindow";
 import axios from "axios";
-import {io} from 'socket.io-client'
+import { io } from "socket.io-client";
 
-const socket = io.connect('http://localhost:3001')
+const socket = io.connect("http://localhost:3001");
 
 const Home = () => {
   const [theme, setTheme] = useState("vs-dark");
@@ -19,19 +20,25 @@ const Home = () => {
   const [output, setOutput] = useState("");
   const [processing, setProcessing] = useState(false);
 
+  let { id } = useParams();
+
   useEffect(()=>{
-      socket.on('getcode', payload=>{
-        setCode(payload)
-      })
+    socket.emit('getRoomID', id);
+  },[])
 
-      socket.on('input', payload=>{
-        setInput(payload)
-      })
+  useEffect(() => {
+    socket.on("getcode", (payload) => {
+      setCode(payload);
+    });
 
-      socket.on('output',payload =>{
-        setOutput(payload)
-      })
-  },[socket])
+    socket.on("input", (payload) => {
+      setInput(payload);
+    });
+
+    socket.on("output", (payload) => {
+      setOutput(payload);
+    });
+  }, [socket]);
 
   const handleChange = (newTheme) => {
     setTheme(newTheme);
@@ -45,7 +52,7 @@ const Home = () => {
 
   const onChange = (codeType, code) => {
     if (codeType == "code") {
-      socket.emit('code', code)
+      socket.emit("code", code);
       setCode(code);
     }
   };
@@ -131,12 +138,17 @@ const Home = () => {
   return (
     <>
       <div className="h-4 w-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500"></div>
-      <div className="flex flex-row">
+      <div className="flex flex-row items-center">
         <div className="py-2 px-4">
           <LanguageDropDown handleChangeLang={handleChangeLang} />
         </div>
         <div className="py-2 px-4">
           <ThemeDropDown handleChange={handleChange} />
+        </div>
+        <div className="py-2 px-4">
+          <button className=" border-2 text-[0.8rem] border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-8 py-2 leading-[1.75rem] hover:shadow transition duration-200 bg-white text-neutral-800 flex-shrink-0">
+            Copy Room Code
+          </button>
         </div>
       </div>
       <div className="flex flex-row">
