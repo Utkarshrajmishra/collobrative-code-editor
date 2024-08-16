@@ -9,7 +9,7 @@ import OutputWindow from "../components/OutputWindow/OutputWindow";
 import axios from "axios";
 import { io } from "socket.io-client";
 
-const socket = io.connect("http://localhost:3001");
+    const socket = io("http://localhost:3001");
 
 const Home = () => {
   const [theme, setTheme] = useState("vs-dark");
@@ -23,10 +23,12 @@ const Home = () => {
   let { id } = useParams();
 
   useEffect(()=>{
-    socket.emit('getRoomID', id);
+    socket.emit('joinRoom', id);
   },[])
 
   useEffect(() => {
+    
+
     socket.on("getcode", (payload) => {
       setCode(payload);
     });
@@ -38,28 +40,44 @@ const Home = () => {
     socket.on("output", (payload) => {
       setOutput(payload);
     });
+
+    // socket.on("setLang",payload =>{
+    //   setLangID(newLanguage.id);
+    //   setLanguage(newLanguage.value);
+    // });
+
+    socket.on()
+
   }, [socket]);
 
   const handleChange = (newTheme) => {
     setTheme(newTheme);
-    console.log(import.meta.env.VITE_REACT_JUDGE_URL);
+  };
+
+  const handleInputChange = (input) => {
+    setInput(input);
+    socket.emit("getinput", { input, id });
+  };
+
+  const handleOutputChange = (output) => {
+    setOutput(output);
+    socket.emit("getoutput", { output, id });
   };
 
   const handleChangeLang = (newLanguage) => {
     setLangID(newLanguage.id);
     setLanguage(newLanguage.value);
+    socket.emit('setLanguage', {id, newLanguage})
   };
 
   const onChange = (codeType, code) => {
-    if (codeType == "code") {
-      socket.emit("code", code);
+    if (codeType === "code") {
+      socket.emit("code", { code, id });
       setCode(code);
     }
   };
 
   const handleCompile = () => {
-    //console.log(import.meta.env.VITE_API_HOST);
-
     setProcessing(true);
     const Data = {
       language_id: langID,
@@ -73,7 +91,6 @@ const Home = () => {
       params: { base64_encoded: "true", fields: "*" },
       headers: {
         "content-type": "application/json",
-        "Content-Type": "application/json",
         "X-RapidAPI-Host": import.meta.env.VITE_JUDGE_HOST,
         "X-RapidAPI-Key": import.meta.env.VITE_JUDGE_KEY,
       },
@@ -88,10 +105,7 @@ const Home = () => {
       })
       .catch((err) => {
         console.log(err);
-
-        // get error status
         let status = err.response.status;
-        //console.log("status", status);
         if (status === 429) {
           alert("Servers are busy, please try again later!");
         }
@@ -100,14 +114,12 @@ const Home = () => {
   };
 
   const checkStatus = async (token) => {
-    console.log(import.meta.env.VITE_API_URL);
     const options = {
       method: "GET",
-      url: import.meta.env.VITE_JUDGE_URL + "/" + token,
+      url: `${import.meta.env.VITE_JUDGE_URL}/${token}`,
       params: { base64_encoded: "true", fields: "*" },
       headers: {
         "content-type": "application/json",
-        "Content-Type": "application/json",
         "X-RapidAPI-Host": import.meta.env.VITE_JUDGE_HOST,
         "X-RapidAPI-Key": import.meta.env.VITE_JUDGE_KEY,
       },
@@ -116,18 +128,13 @@ const Home = () => {
       let response = await axios.request(options);
       let statusId = response.data.status?.id;
 
-      // Processed - we have a result
       if (statusId === 1 || statusId === 2) {
-        // still processing
         setTimeout(() => {
           checkStatus(token);
         }, 2000);
-        return;
       } else {
         setProcessing(false);
-        setOutput(response.data);
-        //console.log("response.data", response.data);
-        return;
+        handleOutputChange(response.data);
       }
     } catch (err) {
       console.log("err", err);
@@ -146,7 +153,7 @@ const Home = () => {
           <ThemeDropDown handleChange={handleChange} />
         </div>
         <div className="py-2 px-4">
-          <button className=" border-2 text-[0.8rem] border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-8 py-2 leading-[1.75rem] hover:shadow transition duration-200 bg-white text-neutral-800 flex-shrink-0">
+          <button className="border-2 text-[0.8rem] border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-8 py-2 leading-[1.75rem] hover:shadow transition duration-200 bg-white text-neutral-800 flex-shrink-0">
             Copy Room Code
           </button>
         </div>
@@ -161,16 +168,17 @@ const Home = () => {
           />
         </div>
         <div className="flex-col w-[40%] pr-4">
-          <div className="right-container flex flex-shrink-0  flex-col">
-            <OutputWindow currentOutput={output} />
+          <div className="right-container flex flex-shrink-0 flex-col">
+            <OutputWindow currentOutput={output} handleOutput={handleOutputChange}/>
           </div>
           <div className="flex flex-col items-end">
-            <InputWindow input={input} setInput={setInput} />
+            <InputWindow input={input} setInput={handleInputChange} />
             <button
               onClick={handleCompile}
               disabled={!code}
-              className={`mt-4 border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2 hover:shadow transition duration-200 bg-white flex-shrink-0",
-                !code ? "opacity-50" : ""`}
+              className={`mt-4 border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2 hover:shadow transition duration-200 bg-white flex-shrink-0 ${
+                !code ? "opacity-50" : ""
+              }`}
             >
               {processing ? "Processing..." : "Compile and Execute"}
             </button>

@@ -16,26 +16,35 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(`user connected ${socket.id}`);
+  console.log(`User connected: ${socket.id}`);
 
-  socket.on('getRoomID', payload => {
-    console.log(payload)
-  })
+  socket.on("joinRoom", (payload) => {
+    socket.join(payload);
 
-  socket.on("code", (payload) => {
-    socket.broadcast.emit('getcode', payload)
+    socket.on("code", (payload) => {
+      socket.to(payload.id).emit("getcode", payload.code);
+    });
+
+    socket.on("getinput", (payload) => {
+      socket.to(payload.id).emit("input", payload.input);
+    });
+
+    socket.on("getoutput", (payload) => {
+      console.log(payload);
+      socket.to(payload.id).emit("output", payload.output);
+    });
+
+    socket.on("disconnect", () => {
+      console.log(`User disconnected: ${socket.id}`);
+    });
+
+    socket.on("getLanguage", (payload) => {
+      console.log(payload);
+      socket.to(payload.id).emit("setLang", payload);
+    });
   });
-
-  socket.on("input", payload =>{
-    socket.broadcast.emit('getinput', payload)
-  });
-
-  socket.on('output', payload =>{
-    socket.broadcast.emit('getoutput', payload)
-  });
-
 });
 
 server.listen(3001, () => {
-  console.log("Server is running");
+  console.log("Server is running on port 3001");
 });

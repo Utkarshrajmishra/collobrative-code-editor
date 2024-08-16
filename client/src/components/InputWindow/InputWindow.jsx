@@ -1,6 +1,8 @@
 
 
 const InputWindow = ({input, setInput}) =>{
+
+
     return (
       <textarea
         name="input"
