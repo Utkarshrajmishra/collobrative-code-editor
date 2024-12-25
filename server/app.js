@@ -10,8 +10,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin:
-      "http://localhost:5173/code-editor/0eb7ce5e-266c-4d0c-80d4-7249990a2a27",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
   },
 });

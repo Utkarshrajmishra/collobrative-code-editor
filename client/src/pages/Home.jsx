@@ -8,11 +8,12 @@ import InputWindow from "../components/InputWindow/InputWindow";
 import OutputWindow from "../components/OutputWindow/OutputWindow";
 import axios from "axios";
 import { io } from "socket.io-client";
+import Menu from "../components/Menu/Menu";
 
-const socket = io("https://collobrative-code-editor-server.vercel.app/");
+const socket = io("http://localhost:3001");
 
 const Home = () => {
-  const [theme, setTheme] = useState("vs-dark");
+  const [theme, setTheme] = useState("vs-light");
   const [langID, setLangID] = useState(63);
   const [language, setLanguage] = useState("");
   const [code, setCode] = useState("");
@@ -141,49 +142,51 @@ const Home = () => {
 
   return (
     <>
-      <div className="h-4 w-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500"></div>
-      <div className="flex flex-row items-center">
-        <div className="py-2 px-4">
-          <LanguageDropDown handleChangeLang={handleChangeLang} />
-        </div>
-        <div className="py-2 px-4">
-          <ThemeDropDown handleChange={handleChange} />
-        </div>
-        <div className="py-2 px-4">
-          <button className="leading-6 border-2 text-[0.86rem] border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2 hover:shadow transition duration-200 bg-white text-neutral-800 flex-shrink-0 flex items-center">
+    <Menu/>
+      <div className="bg-stone-100 w-full">
+        <div className="flex flex-row items-center">
+          <div className="py-2 px-4">
+            <LanguageDropDown handleChangeLang={handleChangeLang} />
+          </div>
+          <div className="py-2 px-4">
+            <ThemeDropDown handleChange={handleChange} />
+          </div>
+          <div className="py-2 px-4">
+            {/* <button className="leading-6 border-2 text-[0.86rem] border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2 hover:shadow transition duration-200 bg-white text-neutral-800 flex-shrink-0 flex items-center">
             Copy Room Code
-          </button>
+          </button> */}
+          </div>
         </div>
-      </div>
-      <div className="flex flex-row">
-        <div className="flex-col w-full h-full justify-start items-end px-4">
-          <CodeEditor
-            code={code}
-            onChange={onChange}
-            theme={theme}
-            lang={language}
-          />
-        </div>
-        <div className="flex-col w-[40%] pr-4">
-          <div className="right-container flex flex-shrink-0 flex-col">
-            <OutputWindow
-              currentOutput={output}
-              handleOutput={handleOutputChange}
+        <div className="flex flex-row">
+          <div className="flex-col w-full h-full justify-start items-end px-4 rounded-md">
+            <CodeEditor
+              code={code}
+              onChange={onChange}
+              theme={theme}
+              lang={language}
             />
           </div>
-          <div className="flex flex-col items-end">
-            <InputWindow input={input} setInput={handleInputChange} />
-            <button
-              onClick={handleCompile}
-              disabled={!code}
-              className={`mt-4 border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2 hover:shadow transition duration-200 bg-white flex-shrink-0 ${
-                !code ? "opacity-50" : ""
-              }`}
-            >
-              {processing ? "Processing..." : "Compile and Execute"}
-            </button>
-            <div className="left-0">
-              {output ? <OutputDetails outputInfo={output} /> : ""}
+          <div className="flex-col w-[40%] pr-4">
+            <div className="right-container flex flex-shrink-0 flex-col">
+              <OutputWindow
+                currentOutput={output}
+                handleOutput={handleOutputChange}
+              />
+            </div>
+            <div className="flex flex-col items-end">
+              <InputWindow input={input} setInput={handleInputChange} />
+              <button
+                onClick={handleCompile}
+                disabled={!code}
+                className={`mt-4 border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2 hover:shadow transition duration-200 bg-white flex-shrink-0 ${
+                  !code ? "opacity-50" : ""
+                }`}
+              >
+                {processing ? "Processing..." : "Compile and Execute"}
+              </button>
+              <div className="left-0">
+                {output ? <OutputDetails outputInfo={output} /> : ""}
+              </div>
             </div>
           </div>
         </div>
