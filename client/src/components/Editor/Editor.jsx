@@ -14,7 +14,7 @@ const CodeEditor = ({ code, theme, lang, onChange }) => {
         language={lang}
         value={code}
         theme={theme}
-        height="55vh"
+        height="65vh"
         defaultLanguage="javascript"
       />
     </div>

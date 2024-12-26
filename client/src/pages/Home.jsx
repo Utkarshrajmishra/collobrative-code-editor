@@ -143,9 +143,9 @@ const Home = () => {
   return (
     <>
       <Menu handleChangeLang={handleChangeLang} />
-      <div className="bg-stone-100 w-full">
-        <div className="flex flex-row">
-          <div className="flex-col w-full h-full justify-start items-end px-4 rounded-md">
+      <div className="bg-stone-100 w-full flex">
+        <div className="flex  flex-col w-[60%] p-3">
+          <div className="flex-col w-full h-full justify-start items-end  rounded-md">
             <CodeEditor
               code={code}
               onChange={onChange}
@@ -153,28 +153,34 @@ const Home = () => {
               lang={language}
             />
           </div>
-          <div className="flex-col w-[40%] pr-4">
-            <div className="right-container flex flex-shrink-0 flex-col">
-              <OutputWindow
-                currentOutput={output}
-                handleOutput={handleOutputChange}
-              />
-            </div>
-            <div className="flex flex-col items-end">
-              <InputWindow input={input} setInput={handleInputChange} />
-              <button
-                onClick={handleCompile}
-                disabled={!code}
-                className={`mt-4 border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2 hover:shadow transition duration-200 bg-white flex-shrink-0 ${
-                  !code ? "opacity-50" : ""
-                }`}
-              >
-                {processing ? "Processing..." : "Compile and Execute"}
-              </button>
-              <div className="left-0">
-                {output ? <OutputDetails outputInfo={output} /> : ""}
+          <div>
+            <h1 className="font-inter text-[1rem] bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 ">
+              Output
+            </h1>
+            <div className="flex">
+              <div className=" w-[50%] ">
+                <OutputWindow
+                  currentOutput={output}
+                  handleOutput={handleOutputChange}
+                />
+              </div>
+              <div className="w-[50%]">
+                <InputWindow input={input} setInput={handleInputChange} />
               </div>
             </div>
+          </div>
+        </div>
+        <div className="flex-col w-[40%] pr-4">
+          <div className="flex flex-col items-end">
+            <button
+              onClick={handleCompile}
+              disabled={!code}
+              className={`mt-4 border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2 hover:shadow transition duration-200 bg-white flex-shrink-0 ${
+                !code ? "opacity-50" : ""
+              }`}
+            >
+              {processing ? "Processing..." : "Compile and Execute"}
+            </button>
           </div>
         </div>
       </div>
