@@ -1,54 +1,40 @@
 export const Styles = {
-  control: (styles) => ({
-    ...styles,
-    width: "100%",
-    maxWidth: "14rem",
-    minWidth: "12rem",
-    borderRadius: "5px",
-    color: "#000",
-    fontSize: "0.8rem",
-    lineHeight: "1.75rem",
-    backgroundColor: "#FFFFFF",
-    cursor: "pointer",
-    border: "2px solid #000000",
-    boxShadow: "5px 5px 0px 0px rgba(0,0,0);",
+  control: (provided) => ({
+    ...provided,
+    height: "39px", // Matches button height
+    padding: "0", // Removes additional padding
+    borderRadius: "0.375rem", // Matches rounded-md
+    backgroundColor: "#171717", // bg-neutral-900
+    color: "#f4f4f5", // text-zinc-50
+    fontSize: "0.9rem", // Matches text-[0.92rem]
+    fontFamily: "Inter, sans-serif", // Matches font-inter
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     ":hover": {
-      border: "2px solid #000000",
-      boxShadow: "none",
+      backgroundColor: "#262626", // hover:bg-neutral-800
     },
+    border: "none", // Removes the default border
+    boxShadow: "none", // Removes focus shadow
   }),
-  option: (styles) => {
-    return {
-      ...styles,
-      color: "#000",
-      fontSize: "0.8rem",
-      lineHeight: "1.75rem",
-      width: "100%",
-      background: "#fff",
-      ":hover": {
-        backgroundColor: "rgb(243 244 246)",
-        color: "#000",
-        cursor: "pointer",
-      },
-    };
-  },
-  menu: (styles) => {
-    return {
-      ...styles,
-      backgroundColor: "#fff",
-      maxWidth: "14rem",
-      border: "2px solid #000000",
-      borderRadius: "5px",
-      boxShadow: "5px 5px 0px 0px rgba(0,0,0);",
-    };
-  },
-
-  placeholder: (defaultStyles) => {
-    return {
-      ...defaultStyles,
-      color: "#000",
-      fontSize: "0.8rem",
-      lineHeight: "1.75rem",
-    };
-  },
+  menu: (provided) => ({
+    fontSize: "0.9rem", // Matches text-[0.92rem]
+    fontFamily: "Inter, sans-serif", // Matches font-inter
+    ...provided,
+    backgroundColor: "#171717", // Matches the dropdown background
+    color: "#f4f4f5", // Matches text color
+  }),
+  singleValue: (provided) => ({
+    ...provided,
+    fontSize: "0.9rem", // Matches text-[0.92rem]
+    fontFamily: "Inter, sans-serif", // Matches font-inter
+    color: "#f4f4f5", // Ensures selected text matches
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    fontSize: "0.9rem", // Matches text-[0.92rem]
+    fontFamily: "Inter, sans-serif", // Matches font-inter
+    backgroundColor: state.isFocused ? "#262626" : "#171717", // Highlight on hover
+    color: state.isFocused ? "#f4f4f5" : "#d4d4d8", // Slightly lighter text for non-hover
+  }),
 };
