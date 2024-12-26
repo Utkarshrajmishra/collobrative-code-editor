@@ -30,21 +30,43 @@ io.on("connection", (socket) => {
     });
 
     socket.on("getoutput", (payload) => {
-      console.log(payload);
       socket.to(payload.id).emit("output", payload.output);
     });
+
+    socket.on("userCall", (payload) => {
+      console.log("Call Emitted");
+      socket
+        .to(payload.to)
+        .emit("incomingCall", { from: socket.id, offer: payload.offer });
+    });
+
+    socket.on("callAccepted", (payload)=>{
+      socket
+        .to(payload.to)
+        .emit("callAccepted", { from: socket.id, offer: payload.offer });
+    });
+
+    socket.on("peerNegotiation", payload=>{
+      socket.to(payload.to).emit("peerNegotiation", {from: socket.id, offer:payload.offer});
+    });
+
+    socket.on("negotationDone", (payload) => {
+      socket
+        .to(payload.to)
+        .emit("peerNegotiationFinal", { from: socket.id, answer: payload.answer });
+    });
+
 
     socket.on("disconnect", () => {
       console.log(`User disconnected: ${socket.id}`);
     });
 
     socket.on("setLanguage", (payload) => {
-      console.log(payload);
       socket.to(payload.id).emit("getLang", payload);
     });
   });
 });
 
-server.listen(3001, () => {
-  console.log("Server is running on port 3001");
+server.listen(8000, () => {
+  console.log("Server is running on port 8000");
 });
