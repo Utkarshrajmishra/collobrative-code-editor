@@ -19,6 +19,14 @@ io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
 
   socket.on("joinRoom", (payload) => {
+    // const room = io.sockets.adapter.rooms.get(payload);
+
+    // // Check if the room already has 2 participants
+    // if (room && room.size >= 2) {
+    //   socket.emit("roomFull", { message: "Room is full" });
+    //   return;
+    // }
+
     socket.join(payload);
 
     socket.on("code", (payload) => {

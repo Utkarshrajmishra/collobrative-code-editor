@@ -117,15 +117,23 @@ const Home = () => {
       setRemoteStream(remoteStream[0]);
     });
   }, []);
+
+  const showAlert=()=>{
+    alert(
+      "The current room is full! You will not be able to join it. Try creating another room or waiting for someone to leave." );
+  }
+
   useEffect(() => {
     socket.emit("joinRoom", id);
 
     socket.on("getcode", setCode);
     socket.on("input", setInput);
     socket.on("output", setOutput);
+    socket.on("roomFull", showAlert);
     socket.on("getLang", ({ newLanguage }) => {
+      console.log(newLanguage)
       setLangID(newLanguage.id);
-      setLanguage(newLanguage.value);
+      setLanguage(prev=>newLanguage.label);
     });
 
     socket.on("incomming:call", handleIncommingCall);
@@ -142,6 +150,7 @@ const Home = () => {
       socket.off("call:accepted", handleCallAccepted);
       socket.off("peer:nego:needed", handleNegoNeedIncomming);
       socket.off("peer:nego:final", handleNegoNeedFinal);
+      socket.off("roomFull", showAlert);
     };
   }, [
     id,
