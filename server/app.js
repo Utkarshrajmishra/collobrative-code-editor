@@ -33,29 +33,22 @@ io.on("connection", (socket) => {
       socket.to(payload.id).emit("output", payload.output);
     });
 
-    socket.on("userCall", (payload) => {
-      console.log("Call Emitted");
-      socket
-        .to(payload.to)
-        .emit("incomingCall", { from: socket.id, offer: payload.offer });
+    socket.on("user:call", ({ to, offer }) => {
+      socket.to(to).emit("incomming:call", { from: socket.id, offer });
     });
 
-    socket.on("callAccepted", (payload)=>{
-      socket
-        .to(payload.to)
-        .emit("callAccepted", { from: socket.id, offer: payload.offer });
+    socket.on("call:accepted", ({ to, ans }) => {
+      socket.to(to).emit("call:accepted", { from: socket.id, ans });
     });
 
-    socket.on("peerNegotiation", payload=>{
-      socket.to(payload.to).emit("peerNegotiation", {from: socket.id, offer:payload.offer});
+    socket.on("peer:nego:needed", ({ to, offer }) => {
+      socket.to(to).emit("peer:nego:needed", { from: socket.id, offer });
     });
 
-    socket.on("negotationDone", (payload) => {
-      socket
-        .to(payload.to)
-        .emit("peerNegotiationFinal", { from: socket.id, answer: payload.answer });
+    socket.on("peer:nego:done", ({ to, ans }) => {
+      // console.log("peer:nego:done", ans);
+      socket.to(to).emit("peer:nego:final", { from: socket.id, ans });
     });
-
 
     socket.on("disconnect", () => {
       console.log(`User disconnected: ${socket.id}`);

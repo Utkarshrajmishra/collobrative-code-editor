@@ -18,27 +18,27 @@ class PeerService {
     if (this.peer) {
       await this.peer.setRemoteDescription(offer);
       const ans = await this.peer.createAnswer();
-      ans.type = "answer"; // Set the type to "answer"
-      await this.peer.setLocalDescription(ans);
+      await this.peer.setLocalDescription(new RTCSessionDescription(ans));
       return ans;
     }
   }
 
   async setLocalDescription(ans) {
+          if (this.peer.signalingState === "stable") {
+            console.warn(
+              "Peer is already in stable state, skipping setLocalDescription."
+            );
+            return;
+          }
     if (this.peer) {
-      const rtcSessionDescription = new RTCSessionDescription({
-        type: ans.type,
-        sdp: ans.sdp,
-      });
-      await this.peer.setLocalDescription(rtcSessionDescription);
+      await this.peer.setRemoteDescription(new RTCSessionDescription(ans));
     }
   }
-  
+
   async getOffer() {
     if (this.peer) {
       const offer = await this.peer.createOffer();
-      offer.type = "offer"; // Set the type to "offer"
-      await this.peer.setLocalDescription(offer);
+      await this.peer.setLocalDescription(new RTCSessionDescription(offer));
       return offer;
     }
   }
