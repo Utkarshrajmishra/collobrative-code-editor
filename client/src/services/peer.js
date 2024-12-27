@@ -9,9 +9,7 @@ class PeerService {
               "stun:global.stun.twilio.com:3478",
             ],
           },
-          {
-            urls: "stun:stun.relay.metered.ca:80",
-          },
+          
           {
             urls: "turn:global.relay.metered.ca:80",
             username: "94f3b47b75bce14a07250d90",
