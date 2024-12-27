@@ -9,10 +9,13 @@ import { useSocket } from "../context/SocketProvider";
 import Menu from "../components/Menu/Menu";
 import peer from "../services/peer";
 import VideoPlayer from "../components/VideoPlayer/VideoPlayer";
+import { Button } from "@/components/ui/button";
+import { AlertDialogDemo } from "@/components/Alert/Alert";
 
 const Home = () => {
   const socket = useSocket();
   const { id } = useParams();
+  const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState("vs-dark");
   const [langID, setLangID] = useState(63);
   const [language, setLanguage] = useState("");
@@ -237,6 +240,7 @@ const Home = () => {
         handleChangeLang={handleChangeLang}
         compile={handleCompile}
         disabled={!code}
+        setOpen={setOpen}
         processing={processing}
       />
       <div className="bg-stone-100 w-full flex">
@@ -267,20 +271,23 @@ const Home = () => {
           </div>
         </div>
         <div className="flex-col w-[40%] pr-4">
-          <div className="flex flex-col items-end">
-            <button
-              onClick={handleCallUser}
-              className="mt-4 border-2 flex items-center justify-center gap-1 text-[0.9rem] border-black rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-3 py-2 hover:shadow transition duration-200 bg-white"
-            >
-              <FaVideo /> Start Video Chat
-            </button>
+          <div className="flex flex-col">
+            <div className="flex justify-end">
+              <button
+                onClick={handleCallUser}
+                className="mt-4 border-2 flex items-center justify-center gap-1 text-[0.9rem] border-black rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-3 py-2 hover:shadow transition duration-200 bg-white"
+              >
+                <FaVideo /> Start Video Chat
+              </button>
+            </div>
           </div>
-          <div className="flex flex-col gap-2 mt-5">
+          <div className="flex flex-col gap-2 mt-5 w-[100%]">
             <VideoPlayer stream={myStream} />
             <VideoPlayer stream={remoteStream} />
           </div>
         </div>
       </div>
+      <AlertDialogDemo open={open} setOpen={setOpen} />
     </>
   );
 };

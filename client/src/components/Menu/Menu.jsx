@@ -1,16 +1,16 @@
 import { GoLink } from "react-icons/go";
 import { IoCodeSlashSharp } from "react-icons/io5";
+import { FaCode } from "react-icons/fa6";
+
 import LanguageDropDown from "../DropDown/LanguageDropDown";
-const Menu = ({ handleChangeLang, compile, disabled, processing }) => {
+const Menu = ({ handleChangeLang,setOpen, compile, disabled, processing }) => {
   const handleShareClick = () => {
     const currentUrl = window.location.href;
     navigator.clipboard
       .writeText(currentUrl)
       .then(() => {
-        alert(
-          "Link copied to clipboard! Share it with your friends and enjoy a seamless pair programming experience"
-        );
-      })
+        setOpen(true)
+             })
       .catch((err) => {
         console.error("Failed to copy link: ", err);
       });
@@ -41,7 +41,7 @@ const Menu = ({ handleChangeLang, compile, disabled, processing }) => {
             "Processing..."
           ) : (
             <>
-              <IoCodeSlashSharp /> Compile
+              <FaCode /> Compile
             </>
           )}
         </button>
