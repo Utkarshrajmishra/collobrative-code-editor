@@ -22,17 +22,7 @@ class PeerService {
             username: "94f3b47b75bce14a07250d90",
             credential: "lkVSrFEXW1s2GW3U",
           },
-          {
-            urls: "turn:global.relay.metered.ca:443",
-            username: "94f3b47b75bce14a07250d90",
-            credential: "lkVSrFEXW1s2GW3U",
-          },
-          {
-            urls: "turns:global.relay.metered.ca:443?transport=tcp",
-            username: "94f3b47b75bce14a07250d90",
-            credential: "lkVSrFEXW1s2GW3U",
-          },
-        ],
+                  ],
       });
     }
   }
