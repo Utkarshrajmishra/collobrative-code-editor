@@ -4,11 +4,11 @@ import CodeEditor from "../components/Editor/Editor";
 import InputWindow from "../components/InputWindow/InputWindow";
 import OutputWindow from "../components/OutputWindow/OutputWindow";
 import axios from "axios";
-import ReactPlayer from "react-player";
-import { FaVideoSlash, FaVideo } from "react-icons/fa";
+import { FaVideo } from "react-icons/fa";
 import { useSocket } from "../context/SocketProvider";
 import Menu from "../components/Menu/Menu";
 import peer from "../services/peer";
+import VideoPlayer from "../components/VideoPlayer/VideoPlayer";
 
 const Home = () => {
   const socket = useSocket();
@@ -20,69 +20,69 @@ const Home = () => {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [processing, setProcessing] = useState(false);
-    const [remoteSocketId, setRemoteSocketId] = useState(id);
-    const [myStream, setMyStream] = useState();
-    const [remoteStream, setRemoteStream] = useState();
+  const [remoteSocketId, setRemoteSocketId] = useState(id);
+  const [myStream, setMyStream] = useState();
+  const [remoteStream, setRemoteStream] = useState();
 
-   const handleCallUser = useCallback(async () => {
-     try {
-       const stream = await navigator.mediaDevices.getUserMedia({
-         audio: true,
-         video: true,
-       });
-       setMyStream(stream);
+  const handleCallUser = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
+      setMyStream(stream);
 
-       // Add tracks before creating the offer
-       stream.getTracks().forEach((track) => {
-         peer.peer.addTrack(track, stream);
-       });
+      // Add tracks before creating the offer
+      stream.getTracks().forEach((track) => {
+        peer.peer.addTrack(track, stream);
+      });
 
-       const offer = await peer.getOffer();
-       socket.emit("user:call", { to: remoteSocketId, offer });
-     } catch (err) {
-       console.error("Error in handleCallUser:", err);
-     }
-   }, [remoteSocketId, socket]);
+      const offer = await peer.getOffer();
+      socket.emit("user:call", { to: remoteSocketId, offer });
+    } catch (err) {
+      console.error("Error in handleCallUser:", err);
+    }
+  }, [remoteSocketId, socket]);
 
-   const handleIncommingCall = useCallback(
-     async ({ from, offer }) => {
-       try {
-         console.log("Incoming call from:", from);
-         setRemoteSocketId(from);
+  const handleIncommingCall = useCallback(
+    async ({ from, offer }) => {
+      try {
+        console.log("Incoming call from:", from);
+        setRemoteSocketId(from);
 
-         const stream = await navigator.mediaDevices.getUserMedia({
-           audio: true,
-           video: true,
-         });
-         setMyStream(stream);
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: true,
+        });
+        setMyStream(stream);
 
-         // Add tracks before creating the answer
-         stream.getTracks().forEach((track) => {
-           peer.peer.addTrack(track, stream);
-         });
+        // Add tracks before creating the answer
+        stream.getTracks().forEach((track) => {
+          peer.peer.addTrack(track, stream);
+        });
 
-         const ans = await peer.getAnswer(offer);
-         socket.emit("call:accepted", { to: from, ans });
-       } catch (err) {
-         console.error("Error in handleIncommingCall:", err);
-       }
-     },
-     [socket]
-   );
+        const ans = await peer.getAnswer(offer);
+        socket.emit("call:accepted", { to: from, ans });
+      } catch (err) {
+        console.error("Error in handleIncommingCall:", err);
+      }
+    },
+    [socket]
+  );
 
-   const handleCallAccepted = useCallback(({ from, ans }) => {
-     try {
-       if (peer.peer.signalingState === "have-local-offer") {
-         peer.setLocalDescription(ans);
-         console.log("Call Accepted!");
-       } else {
-         console.warn("Unexpected signaling state:", peer.peer.signalingState);
-       }
-     } catch (err) {
-       console.error("Error in handleCallAccepted:", err);
-     }
-   }, []); 
-  
+  const handleCallAccepted = useCallback(({ from, ans }) => {
+    try {
+      if (peer.peer.signalingState === "have-local-offer") {
+        peer.setLocalDescription(ans);
+        console.log("Call Accepted!");
+      } else {
+        console.warn("Unexpected signaling state:", peer.peer.signalingState);
+      }
+    } catch (err) {
+      console.error("Error in handleCallAccepted:", err);
+    }
+  }, []);
+
   const handleNegoNeeded = useCallback(async () => {
     const offer = await peer.getOffer();
     socket.emit("peer:nego:needed", { offer, to: id });
@@ -276,44 +276,8 @@ const Home = () => {
             </button>
           </div>
           <div className="flex flex-col gap-2 mt-5">
-            <div>
-              {myStream ? (
-                <div className="relative w-full h-[240px] rounded-md overflow-hidden">
-                  <ReactPlayer
-                    url={myStream}
-                    playing
-                    muted
-                    width="100%"
-                    height="100%"
-                    style={{ position: "absolute", top: 0, left: 0 }}
-                  />
-                </div>
-              ) : (
-                <div className="w-full outline outline-1 outline-black flex flex-col justify-center items-center font-inter text-zinc-400 bg-zinc-900 h-[240px] rounded-md">
-                  <FaVideoSlash fontSize={25} />
-                  <p>Video chat not started</p>
-                </div>
-              )}
-            </div>
-            <div>
-              {remoteStream ? (
-                <div className="relative w-full h-[240px] rounded-md overflow-hidden">
-                  <ReactPlayer
-                    url={remoteStream}
-                    playing
-                    muted
-                    width="100%"
-                    height="100%"
-                    style={{ position: "absolute", top: 0, left: 0 }}
-                  />
-                </div>
-              ) : (
-                <div className="w-full outline outline-1 outline-black flex flex-col justify-center items-center font-inter text-zinc-400 bg-zinc-900 h-[240px] rounded-md">
-                  <FaVideoSlash fontSize={25} />
-                  <p>Video chat not started</p>
-                </div>
-              )}
-            </div>
+            <VideoPlayer stream={myStream} />
+            <VideoPlayer stream={remoteStream} />
           </div>
         </div>
       </div>
