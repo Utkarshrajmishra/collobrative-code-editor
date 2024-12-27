@@ -4,6 +4,9 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    historyApiFallback: true, // Ensures unmatched routes fall back to index.html
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
