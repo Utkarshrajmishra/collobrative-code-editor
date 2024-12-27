@@ -16,30 +16,53 @@ class PeerService {
 
   async getAnswer(offer) {
     if (this.peer) {
-      await this.peer.setRemoteDescription(offer);
-      const ans = await this.peer.createAnswer();
-      await this.peer.setLocalDescription(new RTCSessionDescription(ans));
-      return ans;
+      try {
+        // First set remote description
+        await this.peer.setRemoteDescription(new RTCSessionDescription(offer));
+
+        // Then create and set local description
+        const answer = await this.peer.createAnswer();
+        await this.peer.setLocalDescription(answer);
+
+        return answer;
+      } catch (error) {
+        console.error("Error in getAnswer:", error);
+        throw error;
+      }
     }
   }
 
   async setLocalDescription(ans) {
-          if (this.peer.signalingState === "stable") {
-            console.warn(
-              "Peer is already in stable state, skipping setLocalDescription."
-            );
-            return;
-          }
     if (this.peer) {
-      await this.peer.setRemoteDescription(new RTCSessionDescription(ans));
+      try {
+        // Only proceed if we're in a valid state to receive an answer
+        if (this.peer.signalingState === "have-local-offer") {
+          await this.peer.setRemoteDescription(new RTCSessionDescription(ans));
+        } else {
+          console.warn(
+            `Invalid state for setting remote answer: ${this.peer.signalingState}`
+          );
+        }
+      } catch (error) {
+        console.error("Error in setLocalDescription:", error);
+        throw error;
+      }
     }
   }
 
   async getOffer() {
     if (this.peer) {
-      const offer = await this.peer.createOffer();
-      await this.peer.setLocalDescription(new RTCSessionDescription(offer));
-      return offer;
+      try {
+        const offer = await this.peer.createOffer({
+          offerToReceiveAudio: true,
+          offerToReceiveVideo: true,
+        });
+        await this.peer.setLocalDescription(offer);
+        return offer;
+      } catch (error) {
+        console.error("Error in getOffer:", error);
+        throw error;
+      }
     }
   }
 }

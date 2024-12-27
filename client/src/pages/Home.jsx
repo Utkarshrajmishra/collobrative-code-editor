@@ -23,61 +23,66 @@ const Home = () => {
     const [remoteSocketId, setRemoteSocketId] = useState(id);
     const [myStream, setMyStream] = useState();
     const [remoteStream, setRemoteStream] = useState();
-    const handleCallUser = useCallback(async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: true,
-    });
-    const offer = await peer.getOffer();
-    socket.emit("user:call", { to: remoteSocketId, offer });
-    setMyStream(stream);
-  }, [remoteSocketId, socket]);
 
-  const handleIncommingCall = useCallback(
-    async ({ from, offer }) => {
-          if (peer.peer.signalingState !== "stable") {
-            console.warn(
-              "Cannot process incoming call; connection is not stable."
-            );
-            return;
-          }
-      console.log("Incoming call")
-      setRemoteSocketId(from);
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true,
-      });
-      setMyStream(stream);
-      console.log(`Incoming Call`, from, offer);
-      const ans = await peer.getAnswer(offer);
-      socket.emit("call:accepted", { to: from, ans });
-    },
-    [socket]
-  );
+   const handleCallUser = useCallback(async () => {
+     try {
+       const stream = await navigator.mediaDevices.getUserMedia({
+         audio: true,
+         video: true,
+       });
+       setMyStream(stream);
 
-  const sendStreams = useCallback(() => {
-    const senders = peer.peer.getSenders();
-    for (const track of myStream.getTracks()) {
-      const existingSender = senders.find((sender) => sender.track === track);
-      if (!existingSender) {
-        peer.peer.addTrack(track, myStream);
-      }
-    }
-  }, [myStream]);
+       // Add tracks before creating the offer
+       stream.getTracks().forEach((track) => {
+         peer.peer.addTrack(track, stream);
+       });
 
-  const handleCallAccepted = useCallback(
-    ({ from, ans }) => {
-          if (peer.peer.signalingState === "stable") {
-            console.warn("Remote answer cannot be set in the stable state");
-            return;
-          }
-      peer.setLocalDescription(ans);
-      console.log("Call Accepted!");
-      sendStreams();
-    },
-    [sendStreams]
-  );
+       const offer = await peer.getOffer();
+       socket.emit("user:call", { to: remoteSocketId, offer });
+     } catch (err) {
+       console.error("Error in handleCallUser:", err);
+     }
+   }, [remoteSocketId, socket]);
 
+   const handleIncommingCall = useCallback(
+     async ({ from, offer }) => {
+       try {
+         console.log("Incoming call from:", from);
+         setRemoteSocketId(from);
+
+         const stream = await navigator.mediaDevices.getUserMedia({
+           audio: true,
+           video: true,
+         });
+         setMyStream(stream);
+
+         // Add tracks before creating the answer
+         stream.getTracks().forEach((track) => {
+           peer.peer.addTrack(track, stream);
+         });
+
+         const ans = await peer.getAnswer(offer);
+         socket.emit("call:accepted", { to: from, ans });
+       } catch (err) {
+         console.error("Error in handleIncommingCall:", err);
+       }
+     },
+     [socket]
+   );
+
+   const handleCallAccepted = useCallback(({ from, ans }) => {
+     try {
+       if (peer.peer.signalingState === "have-local-offer") {
+         peer.setLocalDescription(ans);
+         console.log("Call Accepted!");
+       } else {
+         console.warn("Unexpected signaling state:", peer.peer.signalingState);
+       }
+     } catch (err) {
+       console.error("Error in handleCallAccepted:", err);
+     }
+   }, []); 
+  
   const handleNegoNeeded = useCallback(async () => {
     const offer = await peer.getOffer();
     socket.emit("peer:nego:needed", { offer, to: id });
