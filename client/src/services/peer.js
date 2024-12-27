@@ -9,6 +9,29 @@ class PeerService {
               "stun:global.stun.twilio.com:3478",
             ],
           },
+          {
+            urls: "stun:stun.relay.metered.ca:80",
+          },
+          {
+            urls: "turn:global.relay.metered.ca:80",
+            username: "94f3b47b75bce14a07250d90",
+            credential: "lkVSrFEXW1s2GW3U",
+          },
+          {
+            urls: "turn:global.relay.metered.ca:80?transport=tcp",
+            username: "94f3b47b75bce14a07250d90",
+            credential: "lkVSrFEXW1s2GW3U",
+          },
+          {
+            urls: "turn:global.relay.metered.ca:443",
+            username: "94f3b47b75bce14a07250d90",
+            credential: "lkVSrFEXW1s2GW3U",
+          },
+          {
+            urls: "turns:global.relay.metered.ca:443?transport=tcp",
+            username: "94f3b47b75bce14a07250d90",
+            credential: "lkVSrFEXW1s2GW3U",
+          },
         ],
       });
     }
