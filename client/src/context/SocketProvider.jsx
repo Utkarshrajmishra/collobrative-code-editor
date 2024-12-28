@@ -9,7 +9,7 @@ export const useSocket = () => {
 
 export const SocketProvider = (props) => {
   const socket = useMemo(
-    () => io("https://collobrative-code-editor.onrender.com/"),
+    () => io("https://collobrative-code-editor.onrender.com"),
     []
   );
 
