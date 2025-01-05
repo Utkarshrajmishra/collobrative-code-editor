@@ -1,7 +1,7 @@
 # Collobrative Code Editor
 
 
-An online code execution platform lets you write code in your favorite programming language and run that code on the same platform. The platform now includes a real-time collaboration feature powered by Socket.io.
+An online code execution platform lets you write code in your favorite programming language and run that code on the same platform. The platform now includes a real-time collaboration feature powered by Socket.io and WebRTC to support video chat.
 
 ## Screenshots
 
@@ -14,6 +14,7 @@ An online code execution platform lets you write code in your favorite programmi
 - **RapidAPI** – For quickly deploying Judge0 code
 - **Monaco Editor** – The code editor that powers the project
 - **Socket.io** – For real-time collaboration
+- **WebRTC** - For video chat
 
 ## Run Locally
 
