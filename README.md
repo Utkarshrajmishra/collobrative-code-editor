@@ -3,9 +3,9 @@
 
 An online code execution platform lets you write code in your favorite programming language and run that code on the same platform. The platform now includes a real-time collaboration feature powered by Socket.io and WebRTC to support video chat.
 
-## Screenshots
+## Video
 
-![Screenshot](https://github.com/Utkarshrajmishra/XCODE/blob/main/src/screenshot.png)
+![Video](https://www.youtube.com/watch?v=2-CCUgvNjKY&feature=youtu.be)
 
 ## Tech Stack
 - **React.js** – For the front-end
